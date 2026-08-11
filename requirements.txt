@@ -1,0 +1,9 @@
+# Deployed-app runtime ONLY - keep this slim so Streamlit Community Cloud cold
+# starts stay fast. The app reads precomputed results/ CSVs and never runs the
+# build: no VADER lexicon, no optimiser, no data download. Build / reproduction
+# dependencies (scipy, requests, nltk) live in requirements-dev.txt.
+streamlit>=1.50,<2
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+pyarrow>=12.0

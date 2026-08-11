@@ -1,0 +1,8 @@
+# Build / reproduction-only dependencies (NOT needed by the deployed app).
+# Install alongside requirements.txt to run scripts/run_part_b.py end to end:
+#     pip install -r requirements.txt -r requirements-dev.txt
+# Keep these OUT of the deployed app so Streamlit cold starts stay fast - the app
+# should load precomputed artifacts from results/, not rebuild them.
+nltk>=3.8       # VADER sentiment lexicon (src/sentiment.py build step)
+scipy>=1.11     # SLSQP optimisers in src/portfolios.py (build step)
+requests>=2.31  # dataset download in src/data_access.py (build step)
