@@ -118,8 +118,8 @@ st.markdown(
     "transparent, monthly-rebalanced, long-only rule (equity, crypto, or a combined "
     "mix), built and frozen offline; this app only *reads* the results.")
 st.markdown(
-    ":link: **Links:** live app - `PLACEHOLDER: https://<your-app>.streamlit.app`  |  "
-    "code - `PLACEHOLDER: https://github.com/<you>/<repo>`  *(filled at deploy)*")
+    ":link: **Links:** live app - https://z5483577-old-money.streamlit.app  |  "
+    "code - https://github.com/cchan0130/z5483577-old-money")
 st.divider()
 
 tab1, tab2, tab3, tab4 = st.tabs(
@@ -144,15 +144,22 @@ with tab1:
 
     col_a, col_b = st.columns(2)
     with col_a:
-        st.markdown("**Risk vs return** (annualised, coloured by family)")
+        st.markdown("**Risk vs return** (annualised, coloured by family; "
+                    "base methods labelled, sentiment/attention tilts shown unlabelled)")
+        base_methods = {"equal_weight", "min_variance", "risk_parity", "max_sharpe"}
         fig, ax = plt.subplots(figsize=(5.4, 4.2))
         for fam in chosen:
             sub = view[view["family"] == fam]
             ax.scatter(sub["ann_vol"], sub["ann_return"], s=42,
                        color=FAMILY_COLOR[fam], label=fam, alpha=0.85, edgecolor="none")
+        # Label only the four base methods per family - the +sentiment/+attention
+        # variants sit on top of their base in the dense equity cluster.
         for _, row in view.iterrows():
-            ax.annotate(row["method"].replace("+", "+\n"), (row["ann_vol"], row["ann_return"]),
-                        fontsize=5.5, xytext=(3, 3), textcoords="offset points",
+            if row["method"] not in base_methods:
+                continue
+            ax.annotate(row["method"].replace("_", " ").title(),
+                        (row["ann_vol"], row["ann_return"]),
+                        fontsize=7, xytext=(4, 4), textcoords="offset points",
                         color=plotstyle.INK_MUTED)
         ax.set_xlabel("Annualised volatility")
         ax.set_ylabel("Annualised return")
@@ -173,6 +180,7 @@ with tab1:
         ax.axhline(1.0, color=plotstyle.INK_MUTED, lw=0.8, ls=":")
         ax.set_xlabel("Date")
         ax.set_ylabel("Value of $1 (linear)")
+        plotstyle.format_date_axis(ax)
         ax.legend(fontsize=7, title=fam_overlay.capitalize())
         st.pyplot(fig, width="stretch")
         plt.close(fig)
@@ -205,6 +213,7 @@ with tab2:
         ax.plot(g.index, g.values, color=plotstyle.INK, linewidth=1.6)
         ax.axhline(1.0, color=plotstyle.INK_MUTED, lw=0.8, ls=":")
         ax.set_ylabel("Value of $1")
+        plotstyle.format_date_axis(ax)
         st.pyplot(fig, width="stretch")
         plt.close(fig)
 
@@ -214,6 +223,7 @@ with tab2:
         ax.plot(dd.index, dd.values, color=plotstyle.BURGUNDY, linewidth=1.3)
         ax.fill_between(dd.index, dd.values, 0.0, color=plotstyle.BURGUNDY, alpha=0.12)
         ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.0%}"))
+        plotstyle.format_date_axis(ax)
         st.pyplot(fig, width="stretch")
         plt.close(fig)
 
@@ -282,6 +292,7 @@ with tab3:
                     label="Your allocation")
             ax.axhline(1.0, color=plotstyle.INK_MUTED, lw=0.8, ls=":")
             ax.set_ylabel("Value of $1")
+            plotstyle.format_date_axis(ax)
             ax.legend(fontsize=8)
             st.pyplot(fig, width="stretch")
             plt.close(fig)
@@ -305,6 +316,7 @@ with tab4:
     ax.axhline(0.0, color=plotstyle.INK_MUTED, lw=0.8, ls=":")
     ax.set_xlabel("Date")
     ax.set_ylabel("Sentiment (rolling mean)")
+    plotstyle.format_date_axis(ax)
     fig.legend(SECTOR_ORDER, loc="center left", bbox_to_anchor=(1.0, 0.5), fontsize=7,
                title="Sector")
     st.pyplot(fig, width="stretch", bbox_inches="tight")

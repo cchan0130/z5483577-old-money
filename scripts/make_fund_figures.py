@@ -77,7 +77,7 @@ def fig_growth(returns):
     ax.set_title("Growth of $1: Combined funds by weighting method")
     ax.set_xlabel("Date")
     ax.set_ylabel("Value of $1 invested (USD, linear scale)")
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    plotstyle.format_date_axis(ax)
     ax.legend(title="Method", loc="upper left")
     period = _fmt_period(spans[0])
     plotstyle.caption(
@@ -116,7 +116,7 @@ def fig_drawdown(returns):
     ax.set_xlabel("Date")
     ax.set_ylabel("Drawdown (fraction from running peak)")
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.0%}"))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    plotstyle.format_date_axis(ax)
     ax.legend(loc="lower left")
     period = _fmt_period(min(spans, key=lambda s: s.min()))
     plotstyle.caption(
@@ -227,7 +227,7 @@ def fig_sentiment(roll_window=21):
     ax.set_title("Sector news-sentiment index (VADER compound, equal-weight)")
     ax.set_xlabel("Date")
     ax.set_ylabel(f"Sentiment ({roll_window}-day rolling mean of daily index)")
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    plotstyle.format_date_axis(ax)
     handles = [plt.Line2D([0], [0], color=plotstyle.SECTOR_COLORS[s], lw=1.6)
                for s in SECTOR_ORDER]
     fig.legend(handles, SECTOR_ORDER, title="Sector", loc="center left",

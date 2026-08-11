@@ -104,3 +104,20 @@ def caption(fig, text: str) -> None:
     """
     fig.text(0.01, -0.02, text, ha="left", va="top", fontsize=7.5,
              style="italic", color=INK_MUTED, wrap=True)
+
+
+def format_date_axis(ax) -> None:
+    """Year-only, horizontal date ticks in the Old Money style.
+
+    Sets the x-axis major locator to whole years and the formatter to a 4-digit
+    year, keeps the labels horizontal, and pulls the muted tick colour and size
+    from the shared style constants (the same ``INK_MUTED`` / restrained sizing
+    ``caption`` uses). Call on any time-series axis so date ticks read the same
+    across every chart. The axis must be plotted against real datetimes.
+    """
+    import matplotlib.dates as mdates
+
+    ax.xaxis.set_major_locator(mdates.YearLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+    ax.tick_params(axis="x", labelrotation=0, labelcolor=INK_MUTED,
+                   labelsize=mpl.rcParams["xtick.labelsize"])
